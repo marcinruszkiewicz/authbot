@@ -27,14 +27,14 @@ if config_env() == :prod do
   # to check this value into version control, so we use an environment
   # variable instead.
   secret_key_base =
-    System.get_env("SECRET_KEY_BASE") ||
+    System.get_env("AUTHBOT_SECRET_KEY_BASE") ||
       raise """
-      environment variable SECRET_KEY_BASE is missing.
+      environment variable AUTHBOT_SECRET_KEY_BASE is missing.
       You can generate one by calling: mix phx.gen.secret
       """
 
-  host = System.get_env("PHX_HOST") || "example.com"
-  port = String.to_integer(System.get_env("PORT") || "4000")
+  host = System.get_env("AUTHBOT_PHX_HOST") || "example.com"
+  port = String.to_integer(System.get_env("AUTHBOT_PORT") || "4000")
 
   config :authbot, AuthbotWeb.Endpoint,
     url: [host: host, port: 443, scheme: "https"],
