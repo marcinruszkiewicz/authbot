@@ -12,8 +12,8 @@ defmodule Authbot.BotConsumer do
   def handle_event({:READY, info, _ws_state}) do
     Enum.each(info.guilds, fn g ->
       Guilds.create_guild_config(g.id)
+      setup_commands(g.id)
     end)
-    setup_commands(1000108700175966318)
   end
 
   # Event handler for text messages. First we check if it's a known static command,

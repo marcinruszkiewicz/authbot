@@ -76,12 +76,6 @@ config :nostrum,
     :message_content
   ]
 
-config :authbot,
-  guild_id: System.get_env("AUTHBOT_DISCORD_GUILD_ID"),
-  gsf_role: System.get_env("AUTHBOT_DISCORD_GSF_ROLE_ID"),
-  ally_role: System.get_env("AUTHBOT_DISCORD_ALLY_ROLE_ID"),
-  verified_role: System.get_env("AUTHBOT_DISCORD_VERIFIED_ROLE_ID")
-
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"
