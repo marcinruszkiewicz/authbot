@@ -10,6 +10,7 @@ defmodule Authbot.Application do
     children = [
       # Start the Telemetry supervisor
       AuthbotWeb.Telemetry,
+      Authbot.Repo,
       # Start the PubSub system
       {Phoenix.PubSub, name: Authbot.PubSub},
       # Start the Endpoint (http/https)

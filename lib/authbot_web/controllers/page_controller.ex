@@ -5,6 +5,12 @@ defmodule AuthbotWeb.PageController do
     render(conn, :home)
   end
 
+  def step1(conn, %{"guild_id" => guild_id}) do
+    conn
+    |> put_session(:guild_id, guild_id)
+    |> render(:step1)
+  end
+
   def step2(conn, _params) do
     discord_name = conn |> get_session(:discord_name)
 

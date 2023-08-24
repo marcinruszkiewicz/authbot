@@ -14,6 +14,7 @@ defmodule AuthbotWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+    get "/:guild_id/step1", PageController, :step1
     get "/step2", PageController, :step2
     get "/finished", PageController, :finished
   end

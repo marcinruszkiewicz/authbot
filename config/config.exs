@@ -7,6 +7,9 @@
 # General application configuration
 import Config
 
+config :authbot,
+  ecto_repos: [Authbot.Repo]
+
 # Configures the endpoint
 config :authbot, AuthbotWeb.Endpoint,
   url: [host: "localhost"],
