@@ -66,15 +66,7 @@ config :ueberauth, Ueberauth.Strategy.Goonfleet.OAuth,
 
 config :nostrum,
   token: System.get_env("AUTHBOT_BOT_TOKEN"),
-  gateway_intents: [
-    :direct_messages,
-    :guild_bans,
-    :guild_members,
-    :guild_message_reactions,
-    :guild_messages,
-    :guilds,
-    :message_content
-  ]
+  gateway_intents: :all
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

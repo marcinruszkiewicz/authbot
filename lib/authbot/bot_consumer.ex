@@ -3,11 +3,7 @@ defmodule Authbot.BotConsumer do
 
   alias Nostrum.Api
   alias Nostrum.Struct.Interaction
-  alias Authbot.Guilds
-
-  def start_link do
-    Consumer.start_link(__MODULE__)
-  end
+  alias Authbot.{Guilds, Debug}
 
   def handle_event({:READY, info, _ws_state}) do
     Enum.each(info.guilds, fn g ->
@@ -69,7 +65,7 @@ defmodule Authbot.BotConsumer do
   end
 
   defp manage_role(%Interaction{data: %{options: [%{value: role_id}, %{value: "assign"}]}} = interaction) do
-    IO.inspect Api.add_guild_member_role(interaction.guild_id, interaction.member.user_id, role_id)
+    Api.add_guild_member_role(interaction.guild_id, interaction.member.user_id, role_id)
 
     response = %{
       type: 4,  # ChannelMessageWithSource
@@ -193,6 +189,14 @@ defmodule Authbot.BotConsumer do
 
   def give_role(guild_id, member_id, role_id) do
     Api.add_guild_member_role(guild_id, member_id, role_id)
+    |> Kernel.inspect
+    |> Debug.log_response("give_role")
+  end
+
+  def change_nickname(guild_id, member_id, new_nick) do
+    Api.modify_guild_member(String.to_integer(guild_id), member_id, nick: new_nick)
+    |> Kernel.inspect
+    |> Debug.log_response("change_nickname")
   end
 
   defp setup_commands(guild_id) do
@@ -204,6 +208,7 @@ defmodule Authbot.BotConsumer do
           value: "#{r.role_id}"
         }
       end)
+      |> Enum.uniq
 
     role = %{
       name: "role",

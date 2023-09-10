@@ -14,6 +14,16 @@ defmodule Authbot.Guilds do
     config.verified_role_id
   end
 
+  def get_ally_role(guild_id) do
+    config = get_config_by_guild_id(guild_id)
+    config.ally_role_id
+  end
+
+  def get_gsf_role(guild_id) do
+    config = get_config_by_guild_id(guild_id)
+    config.gsf_role_id
+  end
+
   def get_config_by_guild_id(guild_id) do
     Repo.get_by(Config, guild_id: guild_id)
   end

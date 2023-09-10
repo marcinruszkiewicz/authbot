@@ -10,16 +10,45 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-Authbot.Repo.insert!(%Authbot.Guilds.Config{
-  guild_id: 1000108700175966318,
-  verified_role_id: 1143865099258433548,
-  gsf_role_id: 1143558717917364264,
-  ally_role_id: 1143558859579990117
+Authbot.Repo.insert!(%Authbot.Static.GoonPrimaryGroup{
+  primary_group: 134,
+  name: "Tactical Narcotics Team",
+  ticker: "[TNT]"
 })
 
-Authbot.Repo.insert!(%Authbot.Guilds.Config{
-  guild_id: 1142854318920306688,
-  verified_role_id: 1143952582931402886,
-  gsf_role_id: 1142968668393853039,
-  ally_role_id: 1142969348068225134
+Authbot.Repo.insert!(%Authbot.Static.GoonPrimaryGroup{
+  primary_group: 143,
+  name: "Get Off My Lawn",
+  ticker: "[LAWN]"
 })
+
+Authbot.Repo.insert!(%Authbot.Static.GoonPrimaryGroup{
+  primary_group: 1008,
+  name: "Dracarys.",
+  ticker: "[D.C]"
+})
+
+Authbot.Repo.insert!(%Authbot.Static.GoonPrimaryGroup{
+  primary_group: 1168,
+  name: "Invidia Gloriae Comes",
+  ticker: "[IGC]"
+})
+
+Authbot.Repo.insert!(%Authbot.Static.GoonPrimaryGroup{
+  primary_group: 1329,
+  name: "Stribog Clade",
+  ticker: "[TRIAL]"
+})
+
+Authbot.Repo.insert!(%Authbot.Static.GoonPrimaryGroup{
+  primary_group: 1353,
+  name: "Sigma Grindset",
+  ticker: "[5IGMA]"
+})
+
+Authbot.Repo.insert!(%Authbot.Static.GoonPrimaryGroup{
+  primary_group: 1335,
+  name: "Shadow Ultimatum",
+  ticker: "[SHADO]"
+})
+

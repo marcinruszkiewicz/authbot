@@ -7,7 +7,6 @@ defmodule Authbot.Remotes.Goonfleet do
 
   def process_response_body(body) do
     body
-    |> IO.inspect
     |> Jason.decode!
     |> Enum.map(fn({k, v}) -> {String.to_atom(k), v} end)
   end
