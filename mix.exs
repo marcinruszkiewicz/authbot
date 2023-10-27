@@ -47,7 +47,7 @@ defmodule Authbot.MixProject do
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:nostrum, "~> 0.8.0"},
+      {:nostrum, git: "https://github.com/Kraigie/nostrum.git"},
       {:plug_clacks, git: "https://github.com/hauleth/plug_clacks.git"},
       {:ueberauth, "~> 0.10.5"},
       {:ueberauth_discord, "~> 0.7.0"},
