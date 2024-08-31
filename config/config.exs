@@ -66,7 +66,9 @@ config :ueberauth, Ueberauth.Strategy.Goonfleet.OAuth,
 
 config :nostrum,
   token: System.get_env("AUTHBOT_BOT_TOKEN"),
-  gateway_intents: :all
+  gateway_intents: :all,
+  youtubedl: false,
+  streamlink: false
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

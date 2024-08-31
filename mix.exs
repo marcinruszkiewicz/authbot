@@ -9,7 +9,14 @@ defmodule Authbot.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test
+      ]
     ]
   end
 
@@ -24,7 +31,7 @@ defmodule Authbot.MixProject do
   end
 
   # Specifies which paths to compile per environment.
-  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(:test), do: ["lib", "test/support", "test/factories"]
   defp elixirc_paths(_), do: ["lib"]
 
   # Specifies your project dependencies.
@@ -41,7 +48,6 @@ defmodule Authbot.MixProject do
       {:postgrex, ">= 0.0.0"},
       {:esbuild, "~> 0.7", runtime: Mix.env() == :dev},
       {:tailwind, "~> 0.2.0", runtime: Mix.env() == :dev},
-      {:floki, ">= 0.30.0", only: :test},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.20"},
@@ -52,7 +58,11 @@ defmodule Authbot.MixProject do
       {:ueberauth, "~> 0.10.5"},
       {:ueberauth_discord, "~> 0.7.0"},
       {:ueberauth_goonfleet, git: "https://github.com/marcinruszkiewicz/ueberauth_goonfleet.git"},
-      {:httpoison, "~> 1.8"}
+      {:httpoison, "~> 1.8"},
+      {:floki, ">= 0.30.0", only: :test},
+      {:ex_machina, "~> 2.7.0", only: :test},
+      {:excoveralls, "~> 0.10", only: :test},
+      {:patch, "~> 0.13", only: :test}
     ]
   end
 
