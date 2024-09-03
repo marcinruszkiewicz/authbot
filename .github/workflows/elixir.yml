@@ -19,7 +19,7 @@ jobs:
     name: Build and test
     runs-on: ubuntu-latest
     env:
-      AUTHBOT_BOT_TOKEN: fake_token
+      AUTHBOT_BOT_TOKEN: ${{ secrets.AUTHBOT_BOT_TOKEN }}
       PGHOST: localhost
       PGDATABASE: authbot_test
       PGUSERNAME: skyace
