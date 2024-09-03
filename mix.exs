@@ -62,7 +62,10 @@ defmodule Authbot.MixProject do
       {:floki, ">= 0.30.0", only: :test},
       {:ex_machina, "~> 2.7.0", only: :test},
       {:excoveralls, "~> 0.10", only: :test},
-      {:patch, "~> 0.13", only: :test}
+      {:patch, "~> 0.13", only: :test},
+      {:mock, "~> 0.3", only: :test},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:assertions, "~> 0.20.1", only: :test}
     ]
   end
 

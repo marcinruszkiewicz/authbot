@@ -9,9 +9,18 @@ defmodule Authbot.StaticCommands do
       |> elem(1)
       |> Calendar.strftime("%c")
 
-    player_count = Authbot.Remotes.EveApi.get!("/status").body[:players]
+    reply = "The current EVE time is #{time}."
 
-    "The current EVE time is #{time}.\nThere are #{player_count} players online."
-    |> Authbot.BotConsumer.send_message(msg)
+    reply =
+      case Authbot.Remotes.EveApi.get("/status") do
+        {:ok, %HTTPoison.Response{status_code: 200} = response} ->
+          player_count = response.body[:players]
+
+          reply <> "\nThere are #{player_count} players online."
+        _ ->
+          reply
+      end
+
+    Authbot.BotConsumer.send_message(reply, msg)
   end
 end

@@ -14,11 +14,11 @@ defmodule Authbot.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Authbot.PubSub},
       # Start the Endpoint (http/https)
-      AuthbotWeb.Endpoint,
-      Authbot.BotConsumer
+      AuthbotWeb.Endpoint
       # Start a worker by calling: Authbot.Worker.start_link(arg)
       # {Authbot.Worker, arg}
     ]
+    |> start_nostrum(Application.get_env(:authbot, :environment))
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
@@ -33,4 +33,7 @@ defmodule Authbot.Application do
     AuthbotWeb.Endpoint.config_change(changed, removed)
     :ok
   end
+
+  defp start_nostrum(children, :test), do: children
+  defp start_nostrum(children, _env), do: children ++ [Authbot.BotConsumer]
 end

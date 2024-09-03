@@ -1,0 +1,15 @@
+{
+  "skip_files": [
+    "lib/authbot.ex",
+    "lib/authbot/application.ex",
+    "lib/authbot/release.ex",
+    "lib/authbot/repo.ex",
+    "lib/authbot_web.ex",
+    "lib/authbot_web/endpoint.ex",
+    "lib/authbot_web/gettext.ex",
+    "lib/authbot_web/router.ex",
+    "lib/authbot_web/telemetry.ex",
+    "lib/mix/tasks",
+    "test"
+  ]
+}

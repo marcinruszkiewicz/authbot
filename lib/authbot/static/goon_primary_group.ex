@@ -14,6 +14,5 @@ defmodule Authbot.Static.GoonPrimaryGroup do
   def changeset(goon_primary_group, attrs) do
     goon_primary_group
     |> cast(attrs, [:primary_group, :name, :ticker])
-    |> validate_required([:primary_group, :name, :ticker])
   end
 end

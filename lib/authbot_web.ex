@@ -84,7 +84,6 @@ defmodule AuthbotWeb do
       # HTML escaping functionality
       import Phoenix.HTML
       # Core UI components and translation
-      import AuthbotWeb.CoreComponents
       import AuthbotWeb.Gettext
 
       # Shortcut for generating JS commands
