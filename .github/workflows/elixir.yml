@@ -1,0 +1,76 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Elixir CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build and test
+    runs-on: ubuntu-latest
+    env:
+      PGHOST: localhost
+      PGDATABASE: authbot_test
+      PGUSERNAME: skyace
+      PGPASSWORD:
+    steps:
+    - name: Add PostgreSQL binaries to PATH
+      shell: bash
+      run: |
+        if [ "$RUNNER_OS" == "Windows" ]; then
+          echo "$PGBIN" >> $GITHUB_PATH
+        elif [ "$RUNNER_OS" == "Linux" ]; then
+          echo "$(pg_config --bindir)" >> $GITHUB_PATH
+        fi
+    - name: Start preinstalled PostgreSQL
+      shell: bash
+      run: |
+        echo "Initializing database cluster..."
+
+        # Convert backslashes to forward slashes in RUNNER_TEMP for Windows Git Bash
+        export PGHOST="${RUNNER_TEMP//\\//}/postgres"
+        export PGDATA="$PGHOST/pgdata"
+        mkdir -p "$PGDATA"
+
+        # initdb requires file for password in non-interactive mode
+        export PWFILE="$RUNNER_TEMP/pwfile"
+        echo "postgres" > "$PWFILE"
+        initdb --pgdata="$PGDATA" --username="postgres" --pwfile="$PWFILE"
+
+        echo "Starting PostgreSQL..."
+        echo "unix_socket_directories = '$PGHOST'" >> "$PGDATA/postgresql.conf"
+        pg_ctl start
+
+        echo "Creating user..."
+        psql --host "$PGHOST" --username="postgres" --dbname="postgres" --command="CREATE USER $PGUSERNAME PASSWORD '$PGPASSWORD'" --command="\du"
+
+        echo "Creating database..."
+        createdb --owner="$PGUSERNAME" --username="postgres" "$PGDATABASE"
+    - uses: actions/checkout@v4
+    - name: Set up Elixir
+      uses: erlef/setup-beam@61e01a43a562a89bfc54c7f9a378ff67b03e4a21 # v1.16.0
+      with:
+        elixir-version: '1.15.2' # [Required] Define the Elixir version
+        otp-version: '26.0'      # [Required] Define the Erlang/OTP version
+    - name: Restore dependencies cache
+      uses: actions/cache@v3
+      with:
+        path: deps
+        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+        restore-keys: ${{ runner.os }}-mix-
+    - name: Install dependencies
+      run: mix deps.get
+    - name: Run migrations
+      run: MIX_ENV=test mix ecto.migrate
+    - name: Run tests
+      run: mix test
