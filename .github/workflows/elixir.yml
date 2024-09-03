@@ -19,6 +19,7 @@ jobs:
     name: Build and test
     runs-on: ubuntu-latest
     env:
+      AUTHBOT_BOT_TOKEN: fake_token
       PGHOST: localhost
       PGDATABASE: authbot_test
       PGUSERNAME: skyace
@@ -73,4 +74,4 @@ jobs:
     - name: Run migrations
       run: MIX_ENV=test mix ecto.migrate
     - name: Run tests
-      run: mix test
+      run: IX_ENV=test mix test
