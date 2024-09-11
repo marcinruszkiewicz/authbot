@@ -100,7 +100,7 @@ defmodule Authbot.BotConsumerTest do
           default_member_permissions: 8, # admin
           options: [
             %{
-                name: "alliance_tag",
+                name: "alliance_ticker",
                 description: "Add alliance tags to names when using auth command",
                 type: 5
             }
@@ -242,7 +242,7 @@ defmodule Authbot.BotConsumerTest do
           default_member_permissions: 8, # admin
           options: [
             %{
-                name: "alliance_tag",
+                name: "alliance_ticker",
                 description: "Add alliance tags to names when using auth command",
                 type: 5
             }

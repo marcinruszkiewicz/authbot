@@ -3,7 +3,7 @@ defmodule Authbot.Repo.Migrations.AddAllianceTagToConfig do
 
   def change do
     alter table(:configs) do
-      add :alliance_tag, :boolean, default: true, null: false
+      add :alliance_ticker, :boolean, default: true, null: false
     end
   end
 end

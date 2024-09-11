@@ -123,9 +123,9 @@ defmodule Authbot.BotConsumer do
     Api.create_interaction_response(interaction, response)
   end
 
-  defp manage_server_config(%Interaction{data: %{options: [%{name: "alliance_tag", value: alliance_tag}]}} = interaction) do
+  defp manage_server_config(%Interaction{data: %{options: [%{name: "alliance_ticker", value: alliance_ticker}]}} = interaction) do
     config = Guilds.get_config_by_guild_id(interaction.guild_id)
-    Guilds.update_config(config, %{alliance_tag: alliance_tag})
+    Guilds.update_config(config, %{alliance_ticker: alliance_ticker})
 
     response = %{
       type: 4,  # ChannelMessageWithSource
@@ -298,7 +298,7 @@ defmodule Authbot.BotConsumer do
       default_member_permissions: 8, # admin
       options: [
         %{
-            name: "alliance_tag",
+            name: "alliance_ticker",
             description: "Add alliance tags to names when using auth command",
             type: 5
         }

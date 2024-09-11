@@ -24,7 +24,7 @@ defmodule AuthbotWeb.AuthController do
     member_id = conn |> get_session(:member_id)
 
     role_id = determine_role_id(guild_id, conn.assigns.ueberauth_auth.info.location)
-    new_nick = determine_new_nickname(conn.assigns.ueberauth_auth.info.location, conn.assigns.ueberauth_auth.info.name)
+    new_nick = determine_new_nickname(guild_id, conn.assigns.ueberauth_auth.info.location, conn.assigns.ueberauth_auth.info.name)
 
     Authbot.BotConsumer.give_role(guild_id, member_id, role_id)
     Authbot.BotConsumer.change_nickname(guild_id, member_id, new_nick)
@@ -40,14 +40,20 @@ defmodule AuthbotWeb.AuthController do
     end
   end
 
-  defp determine_new_nickname(primary_group, forum_name) do
-    ticker =
-      case Static.get_primary_group(primary_group) do
-        nil -> "[CONDI]"
-        ally -> ally.ticker
-      end
+  defp determine_new_nickname(guild_id, primary_group, forum_name) do
+    add_ticker = Guilds.add_alliance_ticker?(guild_id)
 
-    ticker <> " " <> forum_name
+    if add_ticker do
+      ticker =
+        case Static.get_primary_group(primary_group) do
+          nil -> "[CONDI]"
+          ally -> ally.ticker
+        end
+
+      ticker <> " " <> forum_name
+    else
+      forum_name
+    end
   end
   # defp determine_role_id(guild_id, _), do: Guilds.get_verified_role(guild_id)
 end

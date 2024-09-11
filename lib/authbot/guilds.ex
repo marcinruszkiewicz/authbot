@@ -28,6 +28,11 @@ defmodule Authbot.Guilds do
     Repo.get_by(Config, guild_id: guild_id)
   end
 
+  def add_alliance_ticker?(guild_id) do
+    config = get_config_by_guild_id(guild_id)
+    config.alliance_ticker
+  end
+
   def create_guild_config(guild_id) do
     %Config{}
     |> Config.changeset(%{guild_id: guild_id})

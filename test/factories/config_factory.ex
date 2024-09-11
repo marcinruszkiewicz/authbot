@@ -9,7 +9,7 @@ defmodule Authbot.ConfigFactory do
           verified_role_id: 1,
           gsf_role_id: 2,
           ally_role_id: 3,
-          alliance_tag: true
+          alliance_ticker: true
         }
       end
     end
