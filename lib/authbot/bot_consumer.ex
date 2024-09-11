@@ -55,8 +55,12 @@ defmodule Authbot.BotConsumer do
     manage_assignable_role(interaction)
   end
 
-  def handle_event({:INTERACTION_CREATE, %Interaction{data: %{name: "config"}} = interaction, _ws_state}) do
-    manage_config(interaction)
+  def handle_event({:INTERACTION_CREATE, %Interaction{data: %{name: "role_config"}} = interaction, _ws_state}) do
+    manage_role_config(interaction)
+  end
+
+  def handle_event({:INTERACTION_CREATE, %Interaction{data: %{name: "server_config"}} = interaction, _ws_state}) do
+    manage_server_config(interaction)
   end
 
   # Default event handler, if you don't include this, your consumer WILL crash if
@@ -119,8 +123,21 @@ defmodule Authbot.BotConsumer do
     Api.create_interaction_response(interaction, response)
   end
 
+  defp manage_server_config(%Interaction{data: %{options: [%{name: "alliance_tag", value: alliance_tag}]}} = interaction) do
+    config = Guilds.get_config_by_guild_id(interaction.guild_id)
+    Guilds.update_config(config, %{alliance_tag: alliance_tag})
 
-  defp manage_config(%Interaction{data: %{options: [%{value: role_id}, %{value: "verified"}]}} = interaction) do
+    response = %{
+      type: 4,  # ChannelMessageWithSource
+      data: %{
+        content: "Config changed.",
+        flags: 64 # ephemeral message flag
+      }
+    }
+    Api.create_interaction_response(interaction, response)
+  end
+
+  defp manage_role_config(%Interaction{data: %{options: [%{value: role_id}, %{value: "verified"}]}} = interaction) do
     config = Guilds.get_config_by_guild_id(interaction.guild_id)
     Guilds.update_config(config, %{verified_role_id: role_id})
     setup_role_command(interaction.guild_id)
@@ -135,7 +152,7 @@ defmodule Authbot.BotConsumer do
     Api.create_interaction_response(interaction, response)
   end
 
-  defp manage_config(%Interaction{data: %{options: [%{value: role_id}, %{value: "gsf"}]}} = interaction) do
+  defp manage_role_config(%Interaction{data: %{options: [%{value: role_id}, %{value: "gsf"}]}} = interaction) do
     config = Guilds.get_config_by_guild_id(interaction.guild_id)
     Guilds.update_config(config, %{gsf_role_id: role_id})
     setup_role_command(interaction.guild_id)
@@ -150,7 +167,7 @@ defmodule Authbot.BotConsumer do
     Api.create_interaction_response(interaction, response)
   end
 
-  defp manage_config(%Interaction{data: %{options: [%{value: role_id}, %{value: "ally"}]}} = interaction) do
+  defp manage_role_config(%Interaction{data: %{options: [%{value: role_id}, %{value: "ally"}]}} = interaction) do
     config = Guilds.get_config_by_guild_id(interaction.guild_id)
     Guilds.update_config(config, %{ally_role_id: role_id})
     setup_role_command(interaction.guild_id)
@@ -239,8 +256,8 @@ defmodule Authbot.BotConsumer do
       ]
     }
 
-    bot_config = %{
-      name: "config",
+    role_config = %{
+      name: "role_config",
       description: "Choose roles to serve as verified or gsf/ally roles.",
       default_member_permissions: 8, # admin
       options: [
@@ -275,7 +292,20 @@ defmodule Authbot.BotConsumer do
       ]
     }
 
-    Api.bulk_overwrite_guild_application_commands(guild_id, [authlink, assignable_role, bot_config])
+    server_config = %{
+      name: "server_config",
+      description: "Configure other things",
+      default_member_permissions: 8, # admin
+      options: [
+        %{
+            name: "alliance_tag",
+            description: "Add alliance tags to names when using auth command",
+            type: 5
+        }
+      ]
+    }
+
+    Api.bulk_overwrite_guild_application_commands(guild_id, [authlink, assignable_role, role_config, server_config])
   end
 
   defp setup_role_command(guild_id) do

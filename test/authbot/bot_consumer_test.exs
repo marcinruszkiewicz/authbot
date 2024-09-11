@@ -60,7 +60,7 @@ defmodule Authbot.BotConsumerTest do
           ]
         },
         %{
-          name: "config",
+          name: "role_config",
           description: "Choose roles to serve as verified or gsf/ally roles.",
           default_member_permissions: 8, # admin
           options: [
@@ -91,6 +91,18 @@ defmodule Authbot.BotConsumerTest do
                   value: "ally"
                 }
               ]
+            }
+          ]
+        },
+        %{
+          name: "server_config",
+          description: "Configure other things",
+          default_member_permissions: 8, # admin
+          options: [
+            %{
+                name: "alliance_tag",
+                description: "Add alliance tags to names when using auth command",
+                type: 5
             }
           ]
         }
@@ -190,7 +202,7 @@ defmodule Authbot.BotConsumerTest do
           ]
         },
         %{
-          name: "config",
+          name: "role_config",
           description: "Choose roles to serve as verified or gsf/ally roles.",
           default_member_permissions: 8, # admin
           options: [
@@ -221,6 +233,18 @@ defmodule Authbot.BotConsumerTest do
                   value: "ally"
                 }
               ]
+            }
+          ]
+        },
+        %{
+          name: "server_config",
+          description: "Configure other things",
+          default_member_permissions: 8, # admin
+          options: [
+            %{
+                name: "alliance_tag",
+                description: "Add alliance tags to names when using auth command",
+                type: 5
             }
           ]
         }

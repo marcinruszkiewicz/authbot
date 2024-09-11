@@ -8,7 +8,8 @@ defmodule Authbot.ConfigFactory do
           guild_id: 1234,
           verified_role_id: 1,
           gsf_role_id: 2,
-          ally_role_id: 3
+          ally_role_id: 3,
+          alliance_tag: true
         }
       end
     end

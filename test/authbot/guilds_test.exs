@@ -5,7 +5,7 @@ defmodule Authbot.GuildsTest do
   alias Authbot.Guilds
   alias Authbot.Guilds.{Config, AssignableRole}
 
-  @invalid_guild_attrs %{guild_id: nil, verified_role_id: nil, gsf_role_id: nil, ally_role_id: nil}
+  @invalid_guild_attrs %{guild_id: nil, verified_role_id: nil, gsf_role_id: nil, ally_role_id: nil, alliance_tag: nil}
 
   test "get_verified_role/1 returns the proper role for the proper guild" do
     insert(:config, guild_id: 123, verified_role_id: 15)
