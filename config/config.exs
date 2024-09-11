@@ -68,7 +68,8 @@ config :nostrum,
   token: System.get_env("AUTHBOT_BOT_TOKEN"),
   gateway_intents: :all,
   youtubedl: false,
-  streamlink: false
+  streamlink: false,
+  ffmpeg: false
 
 config :authbot, :environment, Mix.env()
 

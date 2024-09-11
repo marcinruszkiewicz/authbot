@@ -9,6 +9,7 @@ defmodule Authbot.BotConsumer do
     Enum.each(info.guilds, fn g ->
       Guilds.create_guild_config(g.id)
       setup_commands(g.id)
+      setup_role_command(g.id)
     end)
   end
 
@@ -92,7 +93,7 @@ defmodule Authbot.BotConsumer do
 
   defp manage_assignable_role(%Interaction{data: %{options: [%{value: role_id}, %{value: "add"}]}} = interaction) do
     Guilds.add_guild_assignable_role(interaction.guild_id, role_id, interaction.data.resolved.roles[role_id].name)
-    setup_commands(interaction.guild_id)
+    setup_role_command(interaction.guild_id)
 
     response = %{
       type: 4,  # ChannelMessageWithSource
@@ -106,7 +107,7 @@ defmodule Authbot.BotConsumer do
 
   defp manage_assignable_role(%Interaction{data: %{options: [%{value: role_id}, %{value: "remove"}]}} = interaction) do
     Guilds.remove_guild_assignable_role(interaction.guild_id, role_id)
-    setup_commands(interaction.guild_id)
+    setup_role_command(interaction.guild_id)
 
     response = %{
       type: 4,  # ChannelMessageWithSource
@@ -118,10 +119,11 @@ defmodule Authbot.BotConsumer do
     Api.create_interaction_response(interaction, response)
   end
 
+
   defp manage_config(%Interaction{data: %{options: [%{value: role_id}, %{value: "verified"}]}} = interaction) do
     config = Guilds.get_config_by_guild_id(interaction.guild_id)
     Guilds.update_config(config, %{verified_role_id: role_id})
-    setup_commands(interaction.guild_id)
+    setup_role_command(interaction.guild_id)
 
     response = %{
       type: 4,  # ChannelMessageWithSource
@@ -136,7 +138,7 @@ defmodule Authbot.BotConsumer do
   defp manage_config(%Interaction{data: %{options: [%{value: role_id}, %{value: "gsf"}]}} = interaction) do
     config = Guilds.get_config_by_guild_id(interaction.guild_id)
     Guilds.update_config(config, %{gsf_role_id: role_id})
-    setup_commands(interaction.guild_id)
+    setup_role_command(interaction.guild_id)
 
     response = %{
       type: 4,  # ChannelMessageWithSource
@@ -151,7 +153,7 @@ defmodule Authbot.BotConsumer do
   defp manage_config(%Interaction{data: %{options: [%{value: role_id}, %{value: "ally"}]}} = interaction) do
     config = Guilds.get_config_by_guild_id(interaction.guild_id)
     Guilds.update_config(config, %{ally_role_id: role_id})
-    setup_commands(interaction.guild_id)
+    setup_role_command(interaction.guild_id)
 
     response = %{
       type: 4,  # ChannelMessageWithSource
@@ -200,46 +202,6 @@ defmodule Authbot.BotConsumer do
   end
 
   defp setup_commands(guild_id) do
-    role_choices =
-      Guilds.list_guild_assignable_roles(guild_id)
-      |> Enum.map(fn r ->
-        %{
-          name: r.name,
-          value: "#{r.role_id}"
-        }
-      end)
-      |> Enum.uniq
-
-    role = %{
-      name: "role",
-      description: "assign or remove a role",
-      options: [
-        %{
-          type: 3,
-          name: "role",
-          description: "role to assign or remove",
-          required: true,
-          choices: role_choices
-        },
-        %{
-          type: 3,
-          name: "action",
-          description: "whether to assign or remove the role",
-          required: true,
-          choices: [
-            %{
-              name: "assign",
-              value: "assign"
-            },
-            %{
-              name: "remove",
-              value: "remove"
-            }
-          ]
-        }
-      ]
-    }
-
     authlink = %{
       name: "auth",
       description: "show an authorization link so you can be assigned a proper role"
@@ -313,6 +275,50 @@ defmodule Authbot.BotConsumer do
       ]
     }
 
-    Api.bulk_overwrite_guild_application_commands(guild_id, [role, authlink, assignable_role, bot_config])
+    Api.bulk_overwrite_guild_application_commands(guild_id, [authlink, assignable_role, bot_config])
+  end
+
+  defp setup_role_command(guild_id) do
+    role_choices =
+      Guilds.list_guild_assignable_roles(guild_id)
+      |> Enum.map(fn r ->
+        %{
+          name: r.name,
+          value: "#{r.role_id}"
+        }
+      end)
+      |> Enum.uniq
+
+    role = %{
+      name: "role",
+      description: "assign or remove a role",
+      options: [
+        %{
+          type: 3,
+          name: "role",
+          description: "role to assign or remove",
+          required: true,
+          choices: role_choices
+        },
+        %{
+          type: 3,
+          name: "action",
+          description: "whether to assign or remove the role",
+          required: true,
+          choices: [
+            %{
+              name: "assign",
+              value: "assign"
+            },
+            %{
+              name: "remove",
+              value: "remove"
+            }
+          ]
+        }
+      ]
+    }
+
+    Api.create_guild_application_command(guild_id, role)
   end
 end

@@ -25,35 +25,6 @@ defmodule Authbot.BotConsumerTest do
       ready_event = {:READY, ready, %WSState{}}
       expected_response = [
         %{
-          name: "role",
-          description: "assign or remove a role",
-          options: [
-            %{
-              type: 3,
-              name: "role",
-              description: "role to assign or remove",
-              required: true,
-              choices: []
-            },
-            %{
-              type: 3,
-              name: "action",
-              description: "whether to assign or remove the role",
-              required: true,
-              choices: [
-                %{
-                  name: "assign",
-                  value: "assign"
-                },
-                %{
-                  name: "remove",
-                  value: "remove"
-                }
-              ]
-            }
-          ]
-        },
-        %{
           name: "auth",
           description: "show an authorization link so you can be assigned a proper role"
         },
@@ -125,20 +96,52 @@ defmodule Authbot.BotConsumerTest do
         }
       ]
 
-      {:ok, event: ready_event, response: expected_response}
+      role_response = %{
+        name: "role",
+        description: "assign or remove a role",
+        options: [
+          %{
+            type: 3,
+            name: "role",
+            description: "role to assign or remove",
+            required: true,
+            choices: []
+          },
+          %{
+            type: 3,
+            name: "action",
+            description: "whether to assign or remove the role",
+            required: true,
+            choices: [
+              %{
+                name: "assign",
+                value: "assign"
+              },
+              %{
+                name: "remove",
+                value: "remove"
+              }
+            ]
+          }
+        ]
+      }
+
+      {:ok, event: ready_event, response: expected_response, role: role_response}
     end
 
-    test "handler adds bot commands to discord server", %{event: event, response: response} do
+    test "handler adds bot commands to discord server", %{event: event, response: response, role: role} do
       with_mocks([
         {
           Nostrum.Api, [],
           [
-            bulk_overwrite_guild_application_commands: fn(_guild, _opts) -> nil end
+            bulk_overwrite_guild_application_commands: fn(_guild, _opts) -> nil end,
+            create_guild_application_command: fn(_guild, _opts) -> nil end
           ]
         }
       ]) do
         BotConsumer.handle_event(event)
         assert_called Nostrum.Api.bulk_overwrite_guild_application_commands(1234, response)
+        assert_called Nostrum.Api.create_guild_application_command(1234, role)
       end
     end
   end
@@ -152,40 +155,6 @@ defmodule Authbot.BotConsumerTest do
       ready_event = {:READY, ready, %WSState{}}
       expected_response = [
         %{
-          name: "role",
-          description: "assign or remove a role",
-          options: [
-            %{
-              type: 3,
-              name: "role",
-              description: "role to assign or remove",
-              required: true,
-              choices: [
-                %{
-                  name: "Logi",
-                  value: "1"
-                }
-              ]
-            },
-            %{
-              type: 3,
-              name: "action",
-              description: "whether to assign or remove the role",
-              required: true,
-              choices: [
-                %{
-                  name: "assign",
-                  value: "assign"
-                },
-                %{
-                  name: "remove",
-                  value: "remove"
-                }
-              ]
-            }
-          ]
-        },
-        %{
           name: "auth",
           description: "show an authorization link so you can be assigned a proper role"
         },
@@ -257,20 +226,52 @@ defmodule Authbot.BotConsumerTest do
         }
       ]
 
-      {:ok, event: ready_event, response: expected_response}
+      role_response = %{
+        name: "role",
+        description: "assign or remove a role",
+        options: [
+          %{
+            type: 3,
+            name: "role",
+            description: "role to assign or remove",
+            required: true,
+            choices: [%{name: "Logi", value: "1"}]
+          },
+          %{
+            type: 3,
+            name: "action",
+            description: "whether to assign or remove the role",
+            required: true,
+            choices: [
+              %{
+                name: "assign",
+                value: "assign"
+              },
+              %{
+                name: "remove",
+                value: "remove"
+              }
+            ]
+          }
+        ]
+      }
+
+      {:ok, event: ready_event, response: expected_response, role: role_response}
     end
 
-    test "handler adds bot commands to discord server", %{event: event, response: response} do
+    test "handler adds bot commands to discord server", %{event: event, response: response, role: role} do
       with_mocks([
         {
           Nostrum.Api, [],
           [
-            bulk_overwrite_guild_application_commands: fn(_guild, _opts) -> nil end
+            bulk_overwrite_guild_application_commands: fn(_guild, _opts) -> nil end,
+            create_guild_application_command: fn(_guild, _opts) -> nil end
           ]
         }
       ]) do
         BotConsumer.handle_event(event)
         assert_called Nostrum.Api.bulk_overwrite_guild_application_commands(456, response)
+        assert_called Nostrum.Api.create_guild_application_command(456, role)
       end
     end
   end
