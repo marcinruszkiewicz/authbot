@@ -28,6 +28,14 @@ defmodule Authbot.GuildsTest do
     assert Guilds.get_gsf_role(123) == 15
   end
 
+  test "add_alliance_ticker?/1 returns configured bool" do
+    insert(:config, guild_id: 123, alliance_ticker: true)
+    insert(:config, guild_id: 23, alliance_ticker: false)
+
+    assert Guilds.add_alliance_ticker?(123) == true
+    assert Guilds.add_alliance_ticker?(23) == false
+  end
+
   test "get_config_by_guild_id/1 returns the config with given id" do
     config = insert(:config, guild_id: 123, gsf_role_id: 15)
     assert Guilds.get_config_by_guild_id(123) == config
