@@ -6,7 +6,6 @@ defmodule AuthbotWeb.ErrorJSONTest do
   end
 
   test "renders 500" do
-    assert AuthbotWeb.ErrorJSON.render("500.json", %{}) ==
-             %{errors: %{detail: "Internal Server Error"}}
+    assert AuthbotWeb.ErrorJSON.render("500.json", %{}) == %{errors: %{detail: "Internal Server Error"}}
   end
 end

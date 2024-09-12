@@ -9,6 +9,8 @@
     "lib/authbot_web/gettext.ex",
     "lib/authbot_web/router.ex",
     "lib/authbot_web/telemetry.ex",
+    "lib/authbot_web/controllers/page_html.ex",
+    "lib/authbot_web/components/layouts.ex",
     "lib/mix/tasks",
     "test"
   ]

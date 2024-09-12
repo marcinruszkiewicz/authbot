@@ -55,5 +55,4 @@ defmodule AuthbotWeb.AuthController do
       forum_name
     end
   end
-  # defp determine_role_id(guild_id, _), do: Guilds.get_verified_role(guild_id)
 end
