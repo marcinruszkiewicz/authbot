@@ -63,6 +63,10 @@ defmodule Authbot.BotConsumer do
     ApplicationCommands.manage_server_config(interaction)
   end
 
+  def handle_event({:INTERACTION_CREATE, %Interaction{data: %{name: "show_config"}} = interaction, _ws_state}) do
+    ApplicationCommands.show_server_config(interaction)
+  end
+
   # Default event handler, if you don't include this, your consumer WILL crash if
   # you don't have a method definition for each event type.
   def handle_event(_event) do

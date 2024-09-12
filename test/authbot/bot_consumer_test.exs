@@ -107,6 +107,11 @@ defmodule Authbot.BotConsumerTest do
                 required: true
             }
           ]
+        },
+        %{
+          name: "show_config",
+          description: "Display bot configuration for this server",
+          default_member_permissions: 8, # admin
         }
       ]
 
@@ -250,6 +255,11 @@ defmodule Authbot.BotConsumerTest do
                 required: true
             }
           ]
+        },
+        %{
+          name: "show_config",
+          description: "Display bot configuration for this server",
+          default_member_permissions: 8, # admin
         }
       ]
 
@@ -896,6 +906,44 @@ defmodule Authbot.BotConsumerTest do
         BotConsumer.handle_event(event)
         assert_called Nostrum.Api.create_interaction_response(interaction, response)
         assert_called Nostrum.Api.remove_guild_member_role(12345, 9876, 5555)
+      end
+    end
+  end
+
+  describe "on /show_config INTERACTION event" do
+    setup do
+      insert(:assignable_role, guild_id: 12345, role_id: 5555, name: "Logi")
+      insert(:config, guild_id: 12345, alliance_ticker: false)
+
+      interaction = %Interaction{
+        guild_id: 12345,
+        data: %{
+          name: "show_config"
+        }
+      }
+      interaction_event = {:INTERACTION_CREATE, interaction, %WSState{}}
+      expected_response = %{
+        data: %{
+          flags: 64,
+          content: "Current server config:\n\n- Add alliance tickers: false\n\nRoles that people can assign themselves:\n\n- Logi\n\n"
+        },
+        type: 4
+      }
+
+      {:ok, event: interaction_event, response: expected_response, interaction: interaction}
+    end
+
+    test "handler returns a response with the config", %{event: event, response: response, interaction: interaction} do
+      with_mocks([
+        {
+          Nostrum.Api, [],
+          [
+            create_interaction_response: fn(_guild, _opts) -> nil end
+          ]
+        }
+      ]) do
+        BotConsumer.handle_event(event)
+        assert_called Nostrum.Api.create_interaction_response(interaction, response)
       end
     end
   end

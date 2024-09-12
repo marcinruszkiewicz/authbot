@@ -116,6 +116,29 @@ defmodule Authbot.ApplicationCommands do
     Api.create_interaction_response(interaction, response)
   end
 
+  def show_server_config(interaction) do
+    config = Guilds.get_config_by_guild_id(interaction.guild_id)
+    roles = Guilds.list_guild_assignable_roles(interaction.guild_id)
+
+    content = ~s"""
+    Current server config:
+
+    - Add alliance tickers: #{config.alliance_ticker}
+
+    Roles that people can assign themselves:
+
+    #{roles |> Enum.map(fn r -> "- " <> r.name <> "\n" end)}
+    """
+    response = %{
+      type: 4,  # ChannelMessageWithSource
+      data: %{
+        content: content,
+        flags: 64 # ephemeral message flag
+      }
+    }
+    Api.create_interaction_response(interaction, response)
+  end
+
   def setup_commands(guild_id) do
     authlink = %{
       name: "auth",
@@ -204,7 +227,13 @@ defmodule Authbot.ApplicationCommands do
       ]
     }
 
-    Api.bulk_overwrite_guild_application_commands(guild_id, [authlink, assignable_role, role_config, server_config])
+    show_config = %{
+      name: "show_config",
+      description: "Display bot configuration for this server",
+      default_member_permissions: 8, # admin
+    }
+
+    Api.bulk_overwrite_guild_application_commands(guild_id, [authlink, assignable_role, role_config, server_config, show_config])
   end
 
   def setup_role_command(guild_id) do
