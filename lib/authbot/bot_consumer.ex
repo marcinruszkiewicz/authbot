@@ -1,9 +1,12 @@
 defmodule Authbot.BotConsumer do
+  @moduledoc false
   use Nostrum.Consumer
 
+  alias Authbot.ApplicationCommands
+  alias Authbot.Debug
+  alias Authbot.Guilds
   alias Nostrum.Api
   alias Nostrum.Struct.Interaction
-  alias Authbot.{Guilds, Debug, ApplicationCommands}
 
   def handle_event({:READY, info, _ws_state}) do
     Enum.each(info.guilds, fn g ->
@@ -19,13 +22,13 @@ defmodule Authbot.BotConsumer do
     command =
       msg.content
       |> String.split(" ", parts: 2, trim: true)
-      |> List.first
+      |> List.first()
 
     if Enum.member?(static_commands(), command) do
       method =
         command
         |> String.replace_prefix("!", "")
-        |> String.to_atom
+        |> String.to_atom()
 
       apply(Authbot.StaticCommands, method, [msg])
     else
@@ -35,15 +38,18 @@ defmodule Authbot.BotConsumer do
 
   # handle incoming interactions (slash commands)
   def handle_event({:INTERACTION_CREATE, %Interaction{data: %{name: "auth"}} = interaction, _ws_state}) do
-    text = "Click the following link and authorize using both your Discord and goonfleet dot com usernames to receive an appropriate role:\nhttps://atauth.aevi.pl/#{interaction.guild_id}/step1"
+    text =
+      "Click the following link and authorize using both your Discord and goonfleet dot com usernames to receive an appropriate role:\nhttps://atauth.aevi.pl/#{interaction.guild_id}/step1"
 
     response = %{
       type: 4,
       data: %{
         content: text,
-        flags: 64 # ephemeral message flag
+        # ephemeral message flag
+        flags: 64
       }
     }
+
     Api.create_interaction_response(interaction, response)
   end
 
@@ -93,19 +99,23 @@ defmodule Authbot.BotConsumer do
   # Get the list of static commands (which are just defined functions) from the StaticCommands module.
   # If it's not there, the bot doesn't respond to it.
   def static_commands do
-    Authbot.StaticCommands.__info__(:functions)
+    :functions
+    |> Authbot.StaticCommands.__info__()
     |> Enum.map(fn {cmd, _arity} -> "!#{cmd}" end)
   end
 
   def give_role(guild_id, member_id, role_id) do
-    Api.add_guild_member_role(guild_id, member_id, role_id)
-    |> Kernel.inspect
+    guild_id
+    |> Api.add_guild_member_role(member_id, role_id)
+    |> Kernel.inspect()
     |> Debug.log_response("give_role")
   end
 
   def change_nickname(guild_id, member_id, new_nick) do
-    Api.modify_guild_member(String.to_integer(guild_id), member_id, nick: new_nick)
-    |> Kernel.inspect
+    guild_id
+    |> String.to_integer()
+    |> Api.modify_guild_member(member_id, nick: new_nick)
+    |> Kernel.inspect()
     |> Debug.log_response("change_nickname")
   end
 end

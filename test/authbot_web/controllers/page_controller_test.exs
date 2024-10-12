@@ -15,7 +15,9 @@ defmodule AuthbotWeb.PageControllerTest do
       conn = get(conn, ~p"/finished")
 
       response = html_response(conn, 200)
-      assert response =~ "Your authorization is done. Your Discord role and nick on the GSF AT server should have been updated."
+
+      assert response =~
+               "Your authorization is done. Your Discord role and nick on the GSF AT server should have been updated."
     end
   end
 
@@ -37,7 +39,9 @@ defmodule AuthbotWeb.PageControllerTest do
         |> get(~p"/step2")
 
       response = html_response(conn, 200)
-      assert response =~ "You've logged into Discord as TestDiscordUser. Now login into Goonfleet with your forums account:"
+
+      assert response =~
+               "You've logged into Discord as TestDiscordUser. Now login into Goonfleet with your forums account:"
     end
   end
 end

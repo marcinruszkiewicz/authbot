@@ -7,9 +7,6 @@
 # General application configuration
 import Config
 
-config :authbot,
-  ecto_repos: [Authbot.Repo]
-
 # Configures the endpoint
 config :authbot, AuthbotWeb.Endpoint,
   url: [host: "localhost"],
@@ -20,15 +17,34 @@ config :authbot, AuthbotWeb.Endpoint,
   pubsub_server: Authbot.PubSub,
   live_view: [signing_salt: "M5OMlc6/"]
 
+config :authbot, :environment, Mix.env()
+
+config :authbot,
+  ecto_repos: [Authbot.Repo]
+
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.17.11",
   default: [
-    args:
-      ~w(js/app.js --bundle --target=es2017 --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
+    args: ~w(js/app.js --bundle --target=es2017 --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
     cd: Path.expand("../assets", __DIR__),
     env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
   ]
+
+# Configures Elixir's Logger
+config :logger, :console,
+  format: "$time $metadata[$level] $message\n",
+  metadata: [:request_id]
+
+config :nostrum,
+  token: System.get_env("AUTHBOT_BOT_TOKEN"),
+  gateway_intents: :all,
+  youtubedl: false,
+  streamlink: false,
+  ffmpeg: false
+
+# Use Jason for JSON parsing in Phoenix
+config :phoenix, :json_library, Jason
 
 # Configure tailwind (the version is required)
 config :tailwind,
@@ -41,14 +57,6 @@ config :tailwind,
     ),
     cd: Path.expand("../assets", __DIR__)
   ]
-
-# Configures Elixir's Logger
-config :logger, :console,
-  format: "$time $metadata[$level] $message\n",
-  metadata: [:request_id]
-
-# Use Jason for JSON parsing in Phoenix
-config :phoenix, :json_library, Jason
 
 config :ueberauth, Ueberauth,
   providers: [
@@ -63,15 +71,6 @@ config :ueberauth, Ueberauth.Strategy.Discord.OAuth,
 config :ueberauth, Ueberauth.Strategy.Goonfleet.OAuth,
   client_id: System.get_env("AUTHBOT_GOONFLEET_CLIENT_ID"),
   client_secret: System.get_env("AUTHBOT_GOONFLEET_CLIENT_SECRET")
-
-config :nostrum,
-  token: System.get_env("AUTHBOT_BOT_TOKEN"),
-  gateway_intents: :all,
-  youtubedl: false,
-  streamlink: false,
-  ffmpeg: false
-
-config :authbot, :environment, Mix.env()
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

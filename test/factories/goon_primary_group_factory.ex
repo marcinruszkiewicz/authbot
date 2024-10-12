@@ -1,4 +1,5 @@
 defmodule Authbot.GoonPrimaryGroupFactory do
+  @moduledoc false
   alias Authbot.Static.GoonPrimaryGroup
 
   defmacro __using__(_opts) do

@@ -1,4 +1,5 @@
 defmodule Authbot.Remotes.Goonfleet do
+  @moduledoc false
   use HTTPoison.Base
 
   def process_request_url(url) do
@@ -7,7 +8,7 @@ defmodule Authbot.Remotes.Goonfleet do
 
   def process_response_body(body) do
     body
-    |> Jason.decode!
-    |> Enum.map(fn({k, v}) -> {String.to_atom(k), v} end)
+    |> Jason.decode!()
+    |> Enum.map(fn {k, v} -> {String.to_atom(k), v} end)
   end
 end

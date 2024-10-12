@@ -1,18 +1,22 @@
 defmodule Authbot.ApplicationCommands do
+  @moduledoc false
+  alias Authbot.Guilds
   alias Nostrum.Api
   alias Nostrum.Struct.Interaction
-  alias Authbot.Guilds
 
   def manage_role(%Interaction{data: %{options: [%{value: role_id}, %{value: "assign"}]}} = interaction) do
     Api.add_guild_member_role(interaction.guild_id, interaction.member.user_id, role_id)
 
     response = %{
-      type: 4,  # ChannelMessageWithSource
+      # ChannelMessageWithSource
+      type: 4,
       data: %{
         content: "Role assigned.",
-        flags: 64 # ephemeral message flag
+        # ephemeral message flag
+        flags: 64
       }
     }
+
     Api.create_interaction_response(interaction, response)
   end
 
@@ -20,12 +24,15 @@ defmodule Authbot.ApplicationCommands do
     Api.remove_guild_member_role(interaction.guild_id, interaction.member.user_id, role_id)
 
     response = %{
-      type: 4,  # ChannelMessageWithSource
+      # ChannelMessageWithSource
+      type: 4,
       data: %{
         content: "Role removed.",
-        flags: 64 # ephemeral message flag
+        # ephemeral message flag
+        flags: 64
       }
     }
+
     Api.create_interaction_response(interaction, response)
   end
 
@@ -34,12 +41,15 @@ defmodule Authbot.ApplicationCommands do
     setup_role_command(interaction.guild_id)
 
     response = %{
-      type: 4,  # ChannelMessageWithSource
+      # ChannelMessageWithSource
+      type: 4,
       data: %{
         content: "Role added as assignable.",
-        flags: 64 # ephemeral message flag
+        # ephemeral message flag
+        flags: 64
       }
     }
+
     Api.create_interaction_response(interaction, response)
   end
 
@@ -48,26 +58,34 @@ defmodule Authbot.ApplicationCommands do
     setup_role_command(interaction.guild_id)
 
     response = %{
-      type: 4,  # ChannelMessageWithSource
+      # ChannelMessageWithSource
+      type: 4,
       data: %{
         content: "Role removed from assignable roles list.",
-        flags: 64 # ephemeral message flag
+        # ephemeral message flag
+        flags: 64
       }
     }
+
     Api.create_interaction_response(interaction, response)
   end
 
-  def manage_server_config(%Interaction{data: %{options: [%{name: "alliance_ticker", value: alliance_ticker}]}} = interaction) do
+  def manage_server_config(
+        %Interaction{data: %{options: [%{name: "alliance_ticker", value: alliance_ticker}]}} = interaction
+      ) do
     config = Guilds.get_config_by_guild_id(interaction.guild_id)
     Guilds.update_config(config, %{alliance_ticker: alliance_ticker})
 
     response = %{
-      type: 4,  # ChannelMessageWithSource
+      # ChannelMessageWithSource
+      type: 4,
       data: %{
         content: "Config changed.",
-        flags: 64 # ephemeral message flag
+        # ephemeral message flag
+        flags: 64
       }
     }
+
     Api.create_interaction_response(interaction, response)
   end
 
@@ -77,12 +95,15 @@ defmodule Authbot.ApplicationCommands do
     setup_role_command(interaction.guild_id)
 
     response = %{
-      type: 4,  # ChannelMessageWithSource
+      # ChannelMessageWithSource
+      type: 4,
       data: %{
         content: "Config changed.",
-        flags: 64 # ephemeral message flag
+        # ephemeral message flag
+        flags: 64
       }
     }
+
     Api.create_interaction_response(interaction, response)
   end
 
@@ -92,12 +113,15 @@ defmodule Authbot.ApplicationCommands do
     setup_role_command(interaction.guild_id)
 
     response = %{
-      type: 4,  # ChannelMessageWithSource
+      # ChannelMessageWithSource
+      type: 4,
       data: %{
         content: "Config changed.",
-        flags: 64 # ephemeral message flag
+        # ephemeral message flag
+        flags: 64
       }
     }
+
     Api.create_interaction_response(interaction, response)
   end
 
@@ -107,12 +131,15 @@ defmodule Authbot.ApplicationCommands do
     setup_role_command(interaction.guild_id)
 
     response = %{
-      type: 4,  # ChannelMessageWithSource
+      # ChannelMessageWithSource
+      type: 4,
       data: %{
         content: "Config changed.",
-        flags: 64 # ephemeral message flag
+        # ephemeral message flag
+        flags: 64
       }
     }
+
     Api.create_interaction_response(interaction, response)
   end
 
@@ -127,15 +154,19 @@ defmodule Authbot.ApplicationCommands do
 
     Roles that people can assign themselves:
 
-    #{roles |> Enum.map(fn r -> "- " <> r.name <> "\n" end)}
+    #{Enum.map(roles, fn r -> "- " <> r.name <> "\n" end)}
     """
+
     response = %{
-      type: 4,  # ChannelMessageWithSource
+      # ChannelMessageWithSource
+      type: 4,
       data: %{
         content: content,
-        flags: 64 # ephemeral message flag
+        # ephemeral message flag
+        flags: 64
       }
     }
+
     Api.create_interaction_response(interaction, response)
   end
 
@@ -148,7 +179,8 @@ defmodule Authbot.ApplicationCommands do
     assignable_role = %{
       name: "assignable_role",
       description: "Add a role to a list of those that users can assign themselves",
-      default_member_permissions: 8, # admin
+      # admin
+      default_member_permissions: 8,
       options: [
         %{
           # ApplicationCommandType::ROLE
@@ -180,7 +212,8 @@ defmodule Authbot.ApplicationCommands do
     role_config = %{
       name: "role_config",
       description: "Choose roles to serve as verified or gsf/ally roles.",
-      default_member_permissions: 8, # admin
+      # admin
+      default_member_permissions: 8,
       options: [
         %{
           # ApplicationCommandType::ROLE
@@ -216,13 +249,14 @@ defmodule Authbot.ApplicationCommands do
     server_config = %{
       name: "server_config",
       description: "Configure other things",
-      default_member_permissions: 8, # admin
+      # admin
+      default_member_permissions: 8,
       options: [
         %{
-            name: "alliance_ticker",
-            description: "Add alliance tags to names when using auth command",
-            type: 5,
-            required: true
+          name: "alliance_ticker",
+          description: "Add alliance tags to names when using auth command",
+          type: 5,
+          required: true
         }
       ]
     }
@@ -230,22 +264,30 @@ defmodule Authbot.ApplicationCommands do
     show_config = %{
       name: "show_config",
       description: "Display bot configuration for this server",
-      default_member_permissions: 8, # admin
+      # admin
+      default_member_permissions: 8
     }
 
-    Api.bulk_overwrite_guild_application_commands(guild_id, [authlink, assignable_role, role_config, server_config, show_config])
+    Api.bulk_overwrite_guild_application_commands(guild_id, [
+      authlink,
+      assignable_role,
+      role_config,
+      server_config,
+      show_config
+    ])
   end
 
   def setup_role_command(guild_id) do
     role_choices =
-      Guilds.list_guild_assignable_roles(guild_id)
+      guild_id
+      |> Guilds.list_guild_assignable_roles()
       |> Enum.map(fn r ->
         %{
           name: r.name,
           value: "#{r.role_id}"
         }
       end)
-      |> Enum.uniq
+      |> Enum.uniq()
 
     role = %{
       name: "role",

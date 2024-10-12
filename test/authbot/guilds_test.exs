@@ -1,9 +1,11 @@
 defmodule Authbot.GuildsTest do
   use Authbot.DataCase
+
   import Authbot.Factory
 
   alias Authbot.Guilds
-  alias Authbot.Guilds.{Config, AssignableRole}
+  alias Authbot.Guilds.AssignableRole
+  alias Authbot.Guilds.Config
 
   @invalid_guild_attrs %{guild_id: nil, verified_role_id: nil, gsf_role_id: nil, ally_role_id: nil, alliance_ticker: nil}
 

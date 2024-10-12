@@ -7,18 +7,17 @@ defmodule Authbot.Application do
 
   @impl true
   def start(_type, _args) do
-    children = [
-      # Start the Telemetry supervisor
-      AuthbotWeb.Telemetry,
-      Authbot.Repo,
-      # Start the PubSub system
-      {Phoenix.PubSub, name: Authbot.PubSub},
-      # Start the Endpoint (http/https)
-      AuthbotWeb.Endpoint
-      # Start a worker by calling: Authbot.Worker.start_link(arg)
-      # {Authbot.Worker, arg}
-    ]
-    |> start_nostrum(Application.get_env(:authbot, :environment))
+    children =
+      start_nostrum(
+        [AuthbotWeb.Telemetry, Authbot.Repo, {Phoenix.PubSub, name: Authbot.PubSub}, AuthbotWeb.Endpoint],
+        Application.get_env(:authbot, :environment)
+      )
+
+    # Start the Telemetry supervisor
+    # Start the PubSub system
+    # Start the Endpoint (http/https)
+    # Start a worker by calling: Authbot.Worker.start_link(arg)
+    # {Authbot.Worker, arg}
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options

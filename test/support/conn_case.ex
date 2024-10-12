@@ -19,15 +19,14 @@ defmodule AuthbotWeb.ConnCase do
 
   using do
     quote do
+      use AuthbotWeb, :verified_routes
+      import AuthbotWeb.ConnCase
+      import Phoenix.ConnTest
+      import Plug.Conn
       # The default endpoint for testing
       @endpoint AuthbotWeb.Endpoint
 
-      use AuthbotWeb, :verified_routes
-
       # Import conveniences for testing with connections
-      import Plug.Conn
-      import Phoenix.ConnTest
-      import AuthbotWeb.ConnCase
     end
   end
 

@@ -1,22 +1,27 @@
 defmodule Authbot.StaticCommands do
   # Evetime and player count
   # Usage: !evetime
+  @moduledoc false
+  alias Authbot.Remotes.EveApi
+
   def evetime(msg) do
-    Authbot.Remotes.EveApi.start
+    EveApi.start()
 
     time =
-      DateTime.now("Etc/UTC")
+      "Etc/UTC"
+      |> DateTime.now()
       |> elem(1)
       |> Calendar.strftime("%c")
 
     reply = "The current EVE time is #{time}."
 
     reply =
-      case Authbot.Remotes.EveApi.get("/status") do
+      case EveApi.get("/status") do
         {:ok, %HTTPoison.Response{status_code: 200} = response} ->
           player_count = response.body[:players]
 
           reply <> "\nThere are #{player_count} players online."
+
         _ ->
           reply
       end

@@ -4,9 +4,9 @@ defmodule Authbot.Debug do
   """
 
   import Ecto.Query, warn: false
-  alias Authbot.Repo
 
   alias Authbot.Debug.Response
+  alias Authbot.Repo
 
   def log_response(data, reason) do
     %Response{}

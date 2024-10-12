@@ -1,13 +1,15 @@
 defmodule Authbot.Guilds.Config do
+  @moduledoc false
   use Ecto.Schema
+
   import Ecto.Changeset
 
   schema "configs" do
-    field :guild_id, :integer
-    field :verified_role_id, :integer
-    field :gsf_role_id, :integer
-    field :ally_role_id, :integer
-    field :alliance_ticker, :boolean
+    field(:guild_id, :integer)
+    field(:verified_role_id, :integer)
+    field(:gsf_role_id, :integer)
+    field(:ally_role_id, :integer)
+    field(:alliance_ticker, :boolean)
 
     timestamps()
   end

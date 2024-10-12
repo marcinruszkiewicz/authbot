@@ -12,7 +12,7 @@ defmodule AuthbotWeb.PageController do
   end
 
   def step2(conn, _params) do
-    discord_name = conn |> get_session(:discord_name)
+    discord_name = get_session(conn, :discord_name)
 
     render(conn, :step2, discord_name: discord_name)
   end

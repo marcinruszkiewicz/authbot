@@ -1,7 +1,9 @@
 defmodule Authbot.StaticCommandsTest do
   use Authbot.DataCase
+
   import Mock
 
+  alias Authbot.Remotes.EveApi
   alias Authbot.StaticCommands
   alias Nostrum.Struct.Message
 
@@ -14,27 +16,32 @@ defmodule Authbot.StaticCommandsTest do
 
     with_mocks([
       {
-        DateTime, [],
-        [now: fn(_) -> {:ok, ~U[2024-08-31 12:45:29.352180Z]} end]
+        DateTime,
+        [],
+        [now: fn _ -> {:ok, ~U[2024-08-31 12:45:29.352180Z]} end]
       },
       {
-        Authbot.Remotes.EveApi, [],
+        EveApi,
+        [],
         [
-          get: fn(_url) -> {:ok, %HTTPoison.Response{status_code: 200, body: [players: 17_001]}} end,
+          get: fn _url -> {:ok, %HTTPoison.Response{status_code: 200, body: [players: 17_001]}} end,
           start: fn -> nil end
         ]
       },
       {
-        Nostrum.Api, [],
+        Nostrum.Api,
+        [],
         [
-          create_message: fn(_channel, _options) -> nil end,
-          bulk_overwrite_guild_application_commands: fn(_guild, _opts) -> nil end
+          create_message: fn _channel, _options -> nil end,
+          bulk_overwrite_guild_application_commands: fn _guild, _opts -> nil end
         ]
       }
     ]) do
       StaticCommands.evetime(message)
 
-      assert_called Nostrum.Api.create_message(456, "The current EVE time is 2024-08-31 12:45:29.\nThere are 17001 players online.")
+      assert_called(
+        Nostrum.Api.create_message(456, "The current EVE time is 2024-08-31 12:45:29.\nThere are 17001 players online.")
+      )
     end
   end
 
@@ -47,26 +54,29 @@ defmodule Authbot.StaticCommandsTest do
 
     with_mocks([
       {
-        DateTime, [],
-        [now: fn(_) -> {:ok, ~U[2024-08-31 12:45:29.352180Z]} end]
+        DateTime,
+        [],
+        [now: fn _ -> {:ok, ~U[2024-08-31 12:45:29.352180Z]} end]
       },
       {
-        Authbot.Remotes.EveApi, [],
+        EveApi,
+        [],
         [
-          get: fn(_url) -> {:ok, %HTTPoison.Response{status_code: 404, body: nil}} end,
+          get: fn _url -> {:ok, %HTTPoison.Response{status_code: 404, body: nil}} end,
           start: fn -> nil end
         ]
       },
       {
-        Nostrum.Api, [],
+        Nostrum.Api,
+        [],
         [
-          create_message: fn(_channel, _options) -> nil end,
-          bulk_overwrite_guild_application_commands: fn(_guild, _opts) -> nil end
+          create_message: fn _channel, _options -> nil end,
+          bulk_overwrite_guild_application_commands: fn _guild, _opts -> nil end
         ]
       }
     ]) do
       StaticCommands.evetime(message)
-      assert_called Nostrum.Api.create_message(456, "The current EVE time is 2024-08-31 12:45:29.")
+      assert_called(Nostrum.Api.create_message(456, "The current EVE time is 2024-08-31 12:45:29."))
     end
   end
 end

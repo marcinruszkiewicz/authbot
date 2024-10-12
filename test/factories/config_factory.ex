@@ -1,4 +1,5 @@
 defmodule Authbot.ConfigFactory do
+  @moduledoc false
   alias Authbot.Guilds.Config
 
   defmacro __using__(_opts) do

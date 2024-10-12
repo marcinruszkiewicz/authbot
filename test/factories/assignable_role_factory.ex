@@ -1,4 +1,5 @@
 defmodule Authbot.AssignableRoleFactory do
+  @moduledoc false
   alias Authbot.Guilds.AssignableRole
 
   defmacro __using__(_opts) do

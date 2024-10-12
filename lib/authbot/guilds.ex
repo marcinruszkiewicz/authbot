@@ -4,10 +4,10 @@ defmodule Authbot.Guilds do
   """
 
   import Ecto.Query, warn: false
-  alias Authbot.Repo
 
-  alias Authbot.Guilds.Config
   alias Authbot.Guilds.AssignableRole
+  alias Authbot.Guilds.Config
+  alias Authbot.Repo
 
   def get_verified_role(guild_id) do
     config = get_config_by_guild_id(guild_id)
@@ -55,12 +55,12 @@ defmodule Authbot.Guilds do
     AssignableRole
     |> where(guild_id: ^guild_id)
     |> where(role_id: ^role_id)
-    |> Repo.delete_all
+    |> Repo.delete_all()
   end
 
   def list_guild_assignable_roles(guild_id) do
     AssignableRole
     |> where(guild_id: ^guild_id)
-    |> Repo.all
+    |> Repo.all()
   end
 end

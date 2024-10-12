@@ -1,10 +1,12 @@
 defmodule Authbot.Debug.Response do
+  @moduledoc false
   use Ecto.Schema
+
   import Ecto.Changeset
 
   schema "responses" do
-    field :data, :string
-    field :reason, :string
+    field(:data, :string)
+    field(:reason, :string)
 
     timestamps()
   end

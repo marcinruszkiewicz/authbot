@@ -1,11 +1,13 @@
 defmodule Authbot.Guilds.AssignableRole do
+  @moduledoc false
   use Ecto.Schema
+
   import Ecto.Changeset
 
   schema "assignable_roles" do
-    field :name, :string
-    field :guild_id, :integer
-    field :role_id, :integer
+    field(:name, :string)
+    field(:guild_id, :integer)
+    field(:role_id, :integer)
 
     timestamps()
   end

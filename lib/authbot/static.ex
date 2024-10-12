@@ -4,8 +4,8 @@ defmodule Authbot.Static do
   """
 
   import Ecto.Query, warn: false
-  alias Authbot.Repo
 
+  alias Authbot.Repo
   alias Authbot.Static.GoonPrimaryGroup
 
   def get_primary_group(primary_group) do

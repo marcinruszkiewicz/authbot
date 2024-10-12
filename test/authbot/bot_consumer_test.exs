@@ -1,11 +1,20 @@
 defmodule Authbot.BotConsumerTest do
   use Authbot.DataCase
+
+  import Assertions
   import Authbot.Factory
   import Mock
-  import Assertions
 
-  alias Authbot.{BotConsumer, Guilds}
-  alias Nostrum.Struct.{WSState, Event, Guild, Interaction, Message, ApplicationCommandInteractionDataOption, ApplicationCommandInteractionDataResolved}
+  alias Authbot.BotConsumer
+  alias Authbot.Guilds
+  alias Authbot.Remotes.EveApi
+  alias Nostrum.Struct.ApplicationCommandInteractionDataOption
+  alias Nostrum.Struct.ApplicationCommandInteractionDataResolved
+  alias Nostrum.Struct.Event
+  alias Nostrum.Struct.Guild
+  alias Nostrum.Struct.Interaction
+  alias Nostrum.Struct.Message
+  alias Nostrum.Struct.WSState
 
   describe "on unhandled events" do
     setup do
@@ -24,6 +33,7 @@ defmodule Authbot.BotConsumerTest do
       guild = %Guild.UnavailableGuild{id: 1234, unavailable: true}
       ready = %Event.Ready{guilds: [guild]}
       ready_event = {:READY, ready, %WSState{}}
+
       expected_response = [
         %{
           name: "auth",
@@ -32,7 +42,8 @@ defmodule Authbot.BotConsumerTest do
         %{
           name: "assignable_role",
           description: "Add a role to a list of those that users can assign themselves",
-          default_member_permissions: 8, # admin
+          # admin
+          default_member_permissions: 8,
           options: [
             %{
               # ApplicationCommandType::ROLE
@@ -63,7 +74,8 @@ defmodule Authbot.BotConsumerTest do
         %{
           name: "role_config",
           description: "Choose roles to serve as verified or gsf/ally roles.",
-          default_member_permissions: 8, # admin
+          # admin
+          default_member_permissions: 8,
           options: [
             %{
               # ApplicationCommandType::ROLE
@@ -98,20 +110,22 @@ defmodule Authbot.BotConsumerTest do
         %{
           name: "server_config",
           description: "Configure other things",
-          default_member_permissions: 8, # admin
+          # admin
+          default_member_permissions: 8,
           options: [
             %{
-                name: "alliance_ticker",
-                description: "Add alliance tags to names when using auth command",
-                type: 5,
-                required: true
+              name: "alliance_ticker",
+              description: "Add alliance tags to names when using auth command",
+              type: 5,
+              required: true
             }
           ]
         },
         %{
           name: "show_config",
           description: "Display bot configuration for this server",
-          default_member_permissions: 8, # admin
+          # admin
+          default_member_permissions: 8
         }
       ]
 
@@ -151,16 +165,17 @@ defmodule Authbot.BotConsumerTest do
     test "handler adds bot commands to discord server", %{event: event, response: response, role: role} do
       with_mocks([
         {
-          Nostrum.Api, [],
+          Nostrum.Api,
+          [],
           [
-            bulk_overwrite_guild_application_commands: fn(_guild, _opts) -> nil end,
-            create_guild_application_command: fn(_guild, _opts) -> nil end
+            bulk_overwrite_guild_application_commands: fn _guild, _opts -> nil end,
+            create_guild_application_command: fn _guild, _opts -> nil end
           ]
         }
       ]) do
         BotConsumer.handle_event(event)
-        assert_called Nostrum.Api.bulk_overwrite_guild_application_commands(1234, response)
-        assert_called Nostrum.Api.create_guild_application_command(1234, role)
+        assert_called(Nostrum.Api.bulk_overwrite_guild_application_commands(1234, response))
+        assert_called(Nostrum.Api.create_guild_application_command(1234, role))
       end
     end
   end
@@ -172,6 +187,7 @@ defmodule Authbot.BotConsumerTest do
       guild = %Guild.UnavailableGuild{id: 456, unavailable: true}
       ready = %Event.Ready{guilds: [guild]}
       ready_event = {:READY, ready, %WSState{}}
+
       expected_response = [
         %{
           name: "auth",
@@ -180,7 +196,8 @@ defmodule Authbot.BotConsumerTest do
         %{
           name: "assignable_role",
           description: "Add a role to a list of those that users can assign themselves",
-          default_member_permissions: 8, # admin
+          # admin
+          default_member_permissions: 8,
           options: [
             %{
               # ApplicationCommandType::ROLE
@@ -211,7 +228,8 @@ defmodule Authbot.BotConsumerTest do
         %{
           name: "role_config",
           description: "Choose roles to serve as verified or gsf/ally roles.",
-          default_member_permissions: 8, # admin
+          # admin
+          default_member_permissions: 8,
           options: [
             %{
               # ApplicationCommandType::ROLE
@@ -246,20 +264,22 @@ defmodule Authbot.BotConsumerTest do
         %{
           name: "server_config",
           description: "Configure other things",
-          default_member_permissions: 8, # admin
+          # admin
+          default_member_permissions: 8,
           options: [
             %{
-                name: "alliance_ticker",
-                description: "Add alliance tags to names when using auth command",
-                type: 5,
-                required: true
+              name: "alliance_ticker",
+              description: "Add alliance tags to names when using auth command",
+              type: 5,
+              required: true
             }
           ]
         },
         %{
           name: "show_config",
           description: "Display bot configuration for this server",
-          default_member_permissions: 8, # admin
+          # admin
+          default_member_permissions: 8
         }
       ]
 
@@ -299,16 +319,17 @@ defmodule Authbot.BotConsumerTest do
     test "handler adds bot commands to discord server", %{event: event, response: response, role: role} do
       with_mocks([
         {
-          Nostrum.Api, [],
+          Nostrum.Api,
+          [],
           [
-            bulk_overwrite_guild_application_commands: fn(_guild, _opts) -> nil end,
-            create_guild_application_command: fn(_guild, _opts) -> nil end
+            bulk_overwrite_guild_application_commands: fn _guild, _opts -> nil end,
+            create_guild_application_command: fn _guild, _opts -> nil end
           ]
         }
       ]) do
         BotConsumer.handle_event(event)
-        assert_called Nostrum.Api.bulk_overwrite_guild_application_commands(456, response)
-        assert_called Nostrum.Api.create_guild_application_command(456, role)
+        assert_called(Nostrum.Api.bulk_overwrite_guild_application_commands(456, response))
+        assert_called(Nostrum.Api.create_guild_application_command(456, role))
       end
     end
   end
@@ -316,16 +337,19 @@ defmodule Authbot.BotConsumerTest do
   describe "on /auth INTERACTION event" do
     setup do
       interaction = %Interaction{
-        guild_id: 12345,
+        guild_id: 12_345,
         data: %{
           name: "auth"
         }
       }
+
       interaction_event = {:INTERACTION_CREATE, interaction, %WSState{}}
+
       expected_response = %{
         data: %{
           flags: 64,
-          content: "Click the following link and authorize using both your Discord and goonfleet dot com usernames to receive an appropriate role:\nhttps://atauth.aevi.pl/12345/step1"
+          content:
+            "Click the following link and authorize using both your Discord and goonfleet dot com usernames to receive an appropriate role:\nhttps://atauth.aevi.pl/12345/step1"
         },
         type: 4
       }
@@ -336,14 +360,15 @@ defmodule Authbot.BotConsumerTest do
     test "handler returns a link to authorization page", %{event: event, response: response, interaction: interaction} do
       with_mocks([
         {
-          Nostrum.Api, [],
+          Nostrum.Api,
+          [],
           [
-            create_interaction_response: fn(_guild, _opts) -> nil end
+            create_interaction_response: fn _guild, _opts -> nil end
           ]
         }
       ]) do
         BotConsumer.handle_event(event)
-        assert_called Nostrum.Api.create_interaction_response(interaction, response)
+        assert_called(Nostrum.Api.create_interaction_response(interaction, response))
       end
     end
   end
@@ -355,6 +380,7 @@ defmodule Authbot.BotConsumerTest do
         channel_id: 456,
         content: "!evetime"
       }
+
       command_message_event = {:MESSAGE_CREATE, message, %WSState{}}
 
       bad_message = %Message{
@@ -362,6 +388,7 @@ defmodule Authbot.BotConsumerTest do
         channel_id: 456,
         content: "this should be ignored"
       }
+
       bad_message_event = {:MESSAGE_CREATE, bad_message, %WSState{}}
 
       {:ok, ok_event: command_message_event, bad_event: bad_message_event}
@@ -374,53 +401,61 @@ defmodule Authbot.BotConsumerTest do
     test "handles the !evetime command if API doesn't respond", %{ok_event: event} do
       with_mocks([
         {
-          DateTime, [],
-          [now: fn(_) -> {:ok, ~U[2024-08-31 12:45:29.352180Z]} end]
+          DateTime,
+          [],
+          [now: fn _ -> {:ok, ~U[2024-08-31 12:45:29.352180Z]} end]
         },
         {
-          Authbot.Remotes.EveApi, [],
+          EveApi,
+          [],
           [
-            get: fn(_url) -> {:ok, %HTTPoison.Response{status_code: 404, body: nil}} end,
+            get: fn _url -> {:ok, %HTTPoison.Response{status_code: 404, body: nil}} end,
             start: fn -> nil end
           ]
         },
         {
-          Nostrum.Api, [],
+          Nostrum.Api,
+          [],
           [
-            create_message: fn(_channel, _options) -> nil end,
-            bulk_overwrite_guild_application_commands: fn(_guild, _opts) -> nil end
+            create_message: fn _channel, _options -> nil end,
+            bulk_overwrite_guild_application_commands: fn _guild, _opts -> nil end
           ]
         }
       ]) do
         BotConsumer.handle_event(event)
-        assert_called Nostrum.Api.create_message(456, "The current EVE time is 2024-08-31 12:45:29.")
+        assert_called(Nostrum.Api.create_message(456, "The current EVE time is 2024-08-31 12:45:29."))
       end
     end
 
     test "handles the !evetime command if API works", %{ok_event: event} do
       with_mocks([
         {
-          DateTime, [],
-          [now: fn(_) -> {:ok, ~U[2024-08-31 12:45:29.352180Z]} end]
+          DateTime,
+          [],
+          [now: fn _ -> {:ok, ~U[2024-08-31 12:45:29.352180Z]} end]
         },
         {
-          Authbot.Remotes.EveApi, [],
+          EveApi,
+          [],
           [
-            get: fn(_url) -> {:ok, %HTTPoison.Response{status_code: 200, body: [players: 17_001]}} end,
+            get: fn _url -> {:ok, %HTTPoison.Response{status_code: 200, body: [players: 17_001]}} end,
             start: fn -> nil end
           ]
         },
         {
-          Nostrum.Api, [],
+          Nostrum.Api,
+          [],
           [
-            create_message: fn(_channel, _options) -> nil end,
-            bulk_overwrite_guild_application_commands: fn(_guild, _opts) -> nil end
+            create_message: fn _channel, _options -> nil end,
+            bulk_overwrite_guild_application_commands: fn _guild, _opts -> nil end
           ]
         }
       ]) do
         BotConsumer.handle_event(event)
 
-        assert_called Nostrum.Api.create_message(456, "The current EVE time is 2024-08-31 12:45:29.\nThere are 17001 players online.")
+        assert_called(
+          Nostrum.Api.create_message(456, "The current EVE time is 2024-08-31 12:45:29.\nThere are 17001 players online.")
+        )
       end
     end
   end
@@ -429,14 +464,15 @@ defmodule Authbot.BotConsumerTest do
     test "sets user role as requested and saves the debug log of it" do
       with_mocks([
         {
-          Nostrum.Api, [],
+          Nostrum.Api,
+          [],
           [
-            add_guild_member_role: fn(_guild, _member, _role) -> nil end
+            add_guild_member_role: fn _guild, _member, _role -> nil end
           ]
         }
       ]) do
         BotConsumer.give_role(1234, 1, 1)
-        assert_called Nostrum.Api.add_guild_member_role(1234, 1, 1)
+        assert_called(Nostrum.Api.add_guild_member_role(1234, 1, 1))
       end
     end
   end
@@ -445,14 +481,15 @@ defmodule Authbot.BotConsumerTest do
     test "sets user role as requested and saves the debug log of it" do
       with_mocks([
         {
-          Nostrum.Api, [],
+          Nostrum.Api,
+          [],
           [
-            modify_guild_member: fn(_guild, _member, nick: _nick) -> nil end
+            modify_guild_member: fn _guild, _member, nick: _nick -> nil end
           ]
         }
       ]) do
         BotConsumer.change_nickname("1234", 1, nick: "new")
-        assert_called Nostrum.Api.modify_guild_member(1234, 1, [nick: [nick: "new"]])
+        assert_called(Nostrum.Api.modify_guild_member(1234, 1, nick: [nick: "new"]))
       end
     end
   end
@@ -471,14 +508,15 @@ defmodule Authbot.BotConsumerTest do
     test "sets user role as requested and saves the debug log of it", %{message: message} do
       with_mocks([
         {
-          Nostrum.Api, [],
+          Nostrum.Api,
+          [],
           [
-            create_message: fn(_channel, _options) -> nil end
+            create_message: fn _channel, _options -> nil end
           ]
         }
       ]) do
         BotConsumer.send_embed(message, message)
-        assert_called Nostrum.Api.create_message(456, embeds: [message])
+        assert_called(Nostrum.Api.create_message(456, embeds: [message]))
       end
     end
   end
@@ -497,31 +535,36 @@ defmodule Authbot.BotConsumerTest do
     test "sets user role as requested and saves the debug log of it", %{message: message} do
       with_mocks([
         {
-          Nostrum.Api, [],
+          Nostrum.Api,
+          [],
           [
-            create_reaction: fn(_channel, _message, _string) -> nil end
+            create_reaction: fn _channel, _message, _string -> nil end
           ]
         }
       ]) do
         BotConsumer.react(":sun:", message)
-        assert_called Nostrum.Api.create_reaction(456, nil, ":sun:")
+        assert_called(Nostrum.Api.create_reaction(456, nil, ":sun:"))
       end
     end
   end
 
   describe "on /server_config INTERACTION event" do
     setup do
-      insert(:config, guild_id: 12345, alliance_ticker: true)
+      insert(:config, guild_id: 12_345, alliance_ticker: true)
+
       interaction = %Interaction{
-        guild_id: 12345,
+        guild_id: 12_345,
         data: %{
           name: "server_config",
-          options: [%ApplicationCommandInteractionDataOption{
-            name: "alliance_ticker",
-            value: false
-          }]
+          options: [
+            %ApplicationCommandInteractionDataOption{
+              name: "alliance_ticker",
+              value: false
+            }
+          ]
         }
       }
+
       expected_response = %{
         data: %{
           flags: 64,
@@ -529,6 +572,7 @@ defmodule Authbot.BotConsumerTest do
         },
         type: 4
       }
+
       interaction_event = {:INTERACTION_CREATE, interaction, %WSState{}}
 
       {:ok, event: interaction_event, interaction: interaction, response: expected_response}
@@ -537,38 +581,41 @@ defmodule Authbot.BotConsumerTest do
     test "updates the saved guild config", %{event: event, response: response, interaction: interaction} do
       with_mocks([
         {
-          Nostrum.Api, [],
+          Nostrum.Api,
+          [],
           [
-            create_interaction_response: fn(_guild, _opts) -> nil end
+            create_interaction_response: fn _guild, _opts -> nil end
           ]
         }
       ]) do
         BotConsumer.handle_event(event)
-        assert_called Nostrum.Api.create_interaction_response(interaction, response)
-        assert Guilds.add_alliance_ticker?(12345) == false
+        assert_called(Nostrum.Api.create_interaction_response(interaction, response))
+        assert Guilds.add_alliance_ticker?(12_345) == false
       end
     end
   end
 
   describe "on /role_config INTERACTION event with GSF setting" do
     setup do
-      insert(:config, guild_id: 12345, alliance_ticker: true)
+      insert(:config, guild_id: 12_345, alliance_ticker: true)
+
       interaction = %Interaction{
-        guild_id: 12345,
+        guild_id: 12_345,
         data: %{
           name: "role_config",
           options: [
             %ApplicationCommandInteractionDataOption{
               name: "name",
-              value: 44444
+              value: 44_444
             },
             %ApplicationCommandInteractionDataOption{
               name: "action",
               value: "gsf"
-            },
+            }
           ]
         }
       }
+
       expected_response = %{
         data: %{
           flags: 64,
@@ -576,6 +623,7 @@ defmodule Authbot.BotConsumerTest do
         },
         type: 4
       }
+
       interaction_event = {:INTERACTION_CREATE, interaction, %WSState{}}
 
       {:ok, event: interaction_event, interaction: interaction, response: expected_response}
@@ -584,39 +632,42 @@ defmodule Authbot.BotConsumerTest do
     test "updates the saved guild config", %{event: event, response: response, interaction: interaction} do
       with_mocks([
         {
-          Nostrum.Api, [],
+          Nostrum.Api,
+          [],
           [
-            create_interaction_response: fn(_guild, _opts) -> nil end,
-            create_guild_application_command: fn(_guild, _opts) -> nil end
+            create_interaction_response: fn _guild, _opts -> nil end,
+            create_guild_application_command: fn _guild, _opts -> nil end
           ]
         }
       ]) do
         BotConsumer.handle_event(event)
-        assert_called Nostrum.Api.create_interaction_response(interaction, response)
-        assert Guilds.get_gsf_role(12345) == 44444
+        assert_called(Nostrum.Api.create_interaction_response(interaction, response))
+        assert Guilds.get_gsf_role(12_345) == 44_444
       end
     end
   end
 
   describe "on /role_config INTERACTION event with Ally setting" do
     setup do
-      insert(:config, guild_id: 12345, alliance_ticker: true)
+      insert(:config, guild_id: 12_345, alliance_ticker: true)
+
       interaction = %Interaction{
-        guild_id: 12345,
+        guild_id: 12_345,
         data: %{
           name: "role_config",
           options: [
             %ApplicationCommandInteractionDataOption{
               name: "name",
-              value: 44444
+              value: 44_444
             },
             %ApplicationCommandInteractionDataOption{
               name: "action",
               value: "ally"
-            },
+            }
           ]
         }
       }
+
       expected_response = %{
         data: %{
           flags: 64,
@@ -624,6 +675,7 @@ defmodule Authbot.BotConsumerTest do
         },
         type: 4
       }
+
       interaction_event = {:INTERACTION_CREATE, interaction, %WSState{}}
 
       {:ok, event: interaction_event, interaction: interaction, response: expected_response}
@@ -632,39 +684,42 @@ defmodule Authbot.BotConsumerTest do
     test "updates the saved guild config", %{event: event, response: response, interaction: interaction} do
       with_mocks([
         {
-          Nostrum.Api, [],
+          Nostrum.Api,
+          [],
           [
-            create_interaction_response: fn(_guild, _opts) -> nil end,
-            create_guild_application_command: fn(_guild, _opts) -> nil end
+            create_interaction_response: fn _guild, _opts -> nil end,
+            create_guild_application_command: fn _guild, _opts -> nil end
           ]
         }
       ]) do
         BotConsumer.handle_event(event)
-        assert_called Nostrum.Api.create_interaction_response(interaction, response)
-        assert Guilds.get_ally_role(12345) == 44444
+        assert_called(Nostrum.Api.create_interaction_response(interaction, response))
+        assert Guilds.get_ally_role(12_345) == 44_444
       end
     end
   end
 
   describe "on /role_config INTERACTION event with Verified setting" do
     setup do
-      insert(:config, guild_id: 12345, alliance_ticker: true)
+      insert(:config, guild_id: 12_345, alliance_ticker: true)
+
       interaction = %Interaction{
-        guild_id: 12345,
+        guild_id: 12_345,
         data: %{
           name: "role_config",
           options: [
             %ApplicationCommandInteractionDataOption{
               name: "name",
-              value: 44444
+              value: 44_444
             },
             %ApplicationCommandInteractionDataOption{
               name: "action",
               value: "verified"
-            },
+            }
           ]
         }
       }
+
       expected_response = %{
         data: %{
           flags: 64,
@@ -672,6 +727,7 @@ defmodule Authbot.BotConsumerTest do
         },
         type: 4
       }
+
       interaction_event = {:INTERACTION_CREATE, interaction, %WSState{}}
 
       {:ok, event: interaction_event, interaction: interaction, response: expected_response}
@@ -680,16 +736,17 @@ defmodule Authbot.BotConsumerTest do
     test "updates the saved guild config", %{event: event, response: response, interaction: interaction} do
       with_mocks([
         {
-          Nostrum.Api, [],
+          Nostrum.Api,
+          [],
           [
-            create_interaction_response: fn(_guild, _opts) -> nil end,
-            create_guild_application_command: fn(_guild, _opts) -> nil end
+            create_interaction_response: fn _guild, _opts -> nil end,
+            create_guild_application_command: fn _guild, _opts -> nil end
           ]
         }
       ]) do
         BotConsumer.handle_event(event)
-        assert_called Nostrum.Api.create_interaction_response(interaction, response)
-        assert Guilds.get_verified_role(12345) == 44444
+        assert_called(Nostrum.Api.create_interaction_response(interaction, response))
+        assert Guilds.get_verified_role(12_345) == 44_444
       end
     end
   end
@@ -697,29 +754,30 @@ defmodule Authbot.BotConsumerTest do
   describe "on /assignable_role INTERACTION event with add action" do
     setup do
       interaction = %Interaction{
-        guild_id: 12345,
+        guild_id: 12_345,
         data: %{
           name: "assignable_role",
           resolved: %ApplicationCommandInteractionDataResolved{
             roles: %{
-              44444 => %Guild.Role{
+              44_444 => %Guild.Role{
                 name: "Logi",
-                id: 44444
+                id: 44_444
               }
             }
           },
           options: [
             %ApplicationCommandInteractionDataOption{
               name: "name",
-              value: 44444
+              value: 44_444
             },
             %ApplicationCommandInteractionDataOption{
               name: "action",
               value: "add"
-            },
+            }
           ]
         }
       }
+
       expected_response = %{
         data: %{
           flags: 64,
@@ -727,6 +785,7 @@ defmodule Authbot.BotConsumerTest do
         },
         type: 4
       }
+
       interaction_event = {:INTERACTION_CREATE, interaction, %WSState{}}
 
       {:ok, event: interaction_event, interaction: interaction, response: expected_response}
@@ -735,26 +794,32 @@ defmodule Authbot.BotConsumerTest do
     test "updates the saved guild config", %{event: event, response: response, interaction: interaction} do
       with_mocks([
         {
-          Nostrum.Api, [],
+          Nostrum.Api,
+          [],
           [
-            create_interaction_response: fn(_guild, _opts) -> nil end,
-            create_guild_application_command: fn(_guild, _opts) -> nil end
+            create_interaction_response: fn _guild, _opts -> nil end,
+            create_guild_application_command: fn _guild, _opts -> nil end
           ]
         }
       ]) do
         BotConsumer.handle_event(event)
-        assert_called Nostrum.Api.create_interaction_response(interaction, response)
-        assert_struct_in_list %Authbot.Guilds.AssignableRole{role_id: 44444}, Guilds.list_guild_assignable_roles(12345), [:role_id]
+        assert_called(Nostrum.Api.create_interaction_response(interaction, response))
+
+        assert_struct_in_list(
+          %Authbot.Guilds.AssignableRole{role_id: 44_444},
+          Guilds.list_guild_assignable_roles(12_345),
+          [:role_id]
+        )
       end
     end
   end
 
   describe "on /assignable_role INTERACTION event with remove action" do
     setup do
-      insert(:assignable_role, guild_id: 12345, role_id: 5555)
+      insert(:assignable_role, guild_id: 12_345, role_id: 5555)
 
       interaction = %Interaction{
-        guild_id: 12345,
+        guild_id: 12_345,
         data: %{
           name: "assignable_role",
           resolved: %ApplicationCommandInteractionDataResolved{
@@ -773,10 +838,11 @@ defmodule Authbot.BotConsumerTest do
             %ApplicationCommandInteractionDataOption{
               name: "action",
               value: "remove"
-            },
+            }
           ]
         }
       }
+
       expected_response = %{
         data: %{
           flags: 64,
@@ -784,6 +850,7 @@ defmodule Authbot.BotConsumerTest do
         },
         type: 4
       }
+
       interaction_event = {:INTERACTION_CREATE, interaction, %WSState{}}
 
       {:ok, event: interaction_event, interaction: interaction, response: expected_response}
@@ -792,26 +859,27 @@ defmodule Authbot.BotConsumerTest do
     test "updates the saved guild config", %{event: event, response: response, interaction: interaction} do
       with_mocks([
         {
-          Nostrum.Api, [],
+          Nostrum.Api,
+          [],
           [
-            create_interaction_response: fn(_guild, _opts) -> nil end,
-            create_guild_application_command: fn(_guild, _opts) -> nil end
+            create_interaction_response: fn _guild, _opts -> nil end,
+            create_guild_application_command: fn _guild, _opts -> nil end
           ]
         }
       ]) do
         BotConsumer.handle_event(event)
-        assert_called Nostrum.Api.create_interaction_response(interaction, response)
-        assert_lists_equal [], Guilds.list_guild_assignable_roles(12345)
+        assert_called(Nostrum.Api.create_interaction_response(interaction, response))
+        assert_lists_equal([], Guilds.list_guild_assignable_roles(12_345))
       end
     end
   end
 
   describe "on /role INTERACTION event with assign setting" do
     setup do
-      insert(:assignable_role, guild_id: 12345, role_id: 5555)
+      insert(:assignable_role, guild_id: 12_345, role_id: 5555)
 
       interaction = %Interaction{
-        guild_id: 12345,
+        guild_id: 12_345,
         data: %{
           name: "role",
           options: [
@@ -822,13 +890,14 @@ defmodule Authbot.BotConsumerTest do
             %ApplicationCommandInteractionDataOption{
               name: "action",
               value: "assign"
-            },
+            }
           ]
         },
         member: %Guild.Member{
           user_id: 9876
         }
       }
+
       expected_response = %{
         data: %{
           flags: 64,
@@ -836,6 +905,7 @@ defmodule Authbot.BotConsumerTest do
         },
         type: 4
       }
+
       interaction_event = {:INTERACTION_CREATE, interaction, %WSState{}}
 
       {:ok, event: interaction_event, interaction: interaction, response: expected_response}
@@ -844,26 +914,27 @@ defmodule Authbot.BotConsumerTest do
     test "assigns the role to the user", %{event: event, response: response, interaction: interaction} do
       with_mocks([
         {
-          Nostrum.Api, [],
+          Nostrum.Api,
+          [],
           [
-            create_interaction_response: fn(_guild, _opts) -> nil end,
-            add_guild_member_role: fn(_guild, _user_id, _role_id) -> nil end
+            create_interaction_response: fn _guild, _opts -> nil end,
+            add_guild_member_role: fn _guild, _user_id, _role_id -> nil end
           ]
         }
       ]) do
         BotConsumer.handle_event(event)
-        assert_called Nostrum.Api.create_interaction_response(interaction, response)
-        assert_called Nostrum.Api.add_guild_member_role(12345, 9876, 5555)
+        assert_called(Nostrum.Api.create_interaction_response(interaction, response))
+        assert_called(Nostrum.Api.add_guild_member_role(12_345, 9876, 5555))
       end
     end
   end
 
   describe "on /role INTERACTION event with remove setting" do
     setup do
-      insert(:assignable_role, guild_id: 12345, role_id: 5555)
+      insert(:assignable_role, guild_id: 12_345, role_id: 5555)
 
       interaction = %Interaction{
-        guild_id: 12345,
+        guild_id: 12_345,
         data: %{
           name: "role",
           options: [
@@ -874,13 +945,14 @@ defmodule Authbot.BotConsumerTest do
             %ApplicationCommandInteractionDataOption{
               name: "action",
               value: "remove"
-            },
+            }
           ]
         },
         member: %Guild.Member{
           user_id: 9876
         }
       }
+
       expected_response = %{
         data: %{
           flags: 64,
@@ -888,6 +960,7 @@ defmodule Authbot.BotConsumerTest do
         },
         type: 4
       }
+
       interaction_event = {:INTERACTION_CREATE, interaction, %WSState{}}
 
       {:ok, event: interaction_event, interaction: interaction, response: expected_response}
@@ -896,36 +969,40 @@ defmodule Authbot.BotConsumerTest do
     test "assigns the role to the user", %{event: event, response: response, interaction: interaction} do
       with_mocks([
         {
-          Nostrum.Api, [],
+          Nostrum.Api,
+          [],
           [
-            create_interaction_response: fn(_guild, _opts) -> nil end,
-            remove_guild_member_role: fn(_guild, _user_id, _role_id) -> nil end
+            create_interaction_response: fn _guild, _opts -> nil end,
+            remove_guild_member_role: fn _guild, _user_id, _role_id -> nil end
           ]
         }
       ]) do
         BotConsumer.handle_event(event)
-        assert_called Nostrum.Api.create_interaction_response(interaction, response)
-        assert_called Nostrum.Api.remove_guild_member_role(12345, 9876, 5555)
+        assert_called(Nostrum.Api.create_interaction_response(interaction, response))
+        assert_called(Nostrum.Api.remove_guild_member_role(12_345, 9876, 5555))
       end
     end
   end
 
   describe "on /show_config INTERACTION event" do
     setup do
-      insert(:assignable_role, guild_id: 12345, role_id: 5555, name: "Logi")
-      insert(:config, guild_id: 12345, alliance_ticker: false)
+      insert(:assignable_role, guild_id: 12_345, role_id: 5555, name: "Logi")
+      insert(:config, guild_id: 12_345, alliance_ticker: false)
 
       interaction = %Interaction{
-        guild_id: 12345,
+        guild_id: 12_345,
         data: %{
           name: "show_config"
         }
       }
+
       interaction_event = {:INTERACTION_CREATE, interaction, %WSState{}}
+
       expected_response = %{
         data: %{
           flags: 64,
-          content: "Current server config:\n\n- Add alliance tickers: false\n\nRoles that people can assign themselves:\n\n- Logi\n\n"
+          content:
+            "Current server config:\n\n- Add alliance tickers: false\n\nRoles that people can assign themselves:\n\n- Logi\n\n"
         },
         type: 4
       }
@@ -936,14 +1013,15 @@ defmodule Authbot.BotConsumerTest do
     test "handler returns a response with the config", %{event: event, response: response, interaction: interaction} do
       with_mocks([
         {
-          Nostrum.Api, [],
+          Nostrum.Api,
+          [],
           [
-            create_interaction_response: fn(_guild, _opts) -> nil end
+            create_interaction_response: fn _guild, _opts -> nil end
           ]
         }
       ]) do
         BotConsumer.handle_event(event)
-        assert_called Nostrum.Api.create_interaction_response(interaction, response)
+        assert_called(Nostrum.Api.create_interaction_response(interaction, response))
       end
     end
   end

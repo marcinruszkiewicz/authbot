@@ -1,5 +1,6 @@
 defmodule Authbot.StaticTest do
   use Authbot.DataCase
+
   import Authbot.Factory
 
   alias Authbot.Static

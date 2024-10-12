@@ -41,13 +41,10 @@ defmodule Authbot.MixProject do
     [
       {:phoenix, "~> 1.7.6"},
       {:phoenix_html, "~> 3.3"},
-      {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_view, "~> 0.19.0"},
       {:phoenix_ecto, "~> 4.4"},
       {:ecto_sql, "~> 3.10"},
       {:postgrex, ">= 0.0.0"},
-      {:esbuild, "~> 0.7", runtime: Mix.env() == :dev},
-      {:tailwind, "~> 0.2.0", runtime: Mix.env() == :dev},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.20"},
@@ -59,12 +56,17 @@ defmodule Authbot.MixProject do
       {:ueberauth_discord, "~> 0.7.0"},
       {:ueberauth_goonfleet, git: "https://github.com/marcinruszkiewicz/ueberauth_goonfleet.git"},
       {:httpoison, "~> 1.8"},
+      {:esbuild, "~> 0.7", runtime: Mix.env() == :dev},
+      {:tailwind, "~> 0.2.0", runtime: Mix.env() == :dev},
+      {:phoenix_live_reload, "~> 1.2", only: :dev},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:styler, "~> 1.1", only: [:dev, :test], runtime: false},
+      {:sobelow, "~> 0.13", only: [:dev, :test], runtime: false},
       {:floki, ">= 0.30.0", only: :test},
       {:ex_machina, "~> 2.7.0", only: :test},
       {:excoveralls, "~> 0.10", only: :test},
       {:patch, "~> 0.13", only: :test},
       {:mock, "~> 0.3", only: :test},
-      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:assertions, "~> 0.20.1", only: :test}
     ]
   end
